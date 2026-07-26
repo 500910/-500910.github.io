@@ -1,98 +1,32 @@
-￼好的，代码在这里，全部复制，贴到大框里：
-    <div class="input-card">
-        <label for="product-desc">Describe your product or service</label>
-        <textarea id="product-desc" placeholder="e.g. A sustainable bamboo toothbrush subscription service that delivers eco-friendly dental care products to your door every month..."></textarea>
-        <button class="btn" id="generate-btn" onclick="generate()">✨ Generate Marketing Strategy</button>
-    </div>
+￼好。现在粘贴这段 (复制整段): ```html html lang=“en”> head> meta charset=“utf-8”>
 
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>Analyzing your product and crafting the perfect strategy...</p>
-    </div>
+meta name=“viewport” content=“width=device-width, initial-scale
 
-    <div class="results" id="results">
-        <div class="result-card">
-            <h3>📝 Marketing Copy</h3>
-            <h2 id="copy-title">Headline Goes Here</h2>
-            <p id="copy-body">Marketing copy will appear here...</p>
-        </div>
-        <div class="result-card">
-            <h3>🎨 Visual Strategy</h3>
-            <h2 id="visual-title">Visual Direction</h2>
-            <p id="visual-body">Visual strategy will appear here...</p>
-            <div id="visual-tags"></div>
-        </div>
-        <div class="result-card">
-            <h3>🎯 Target Audience</h3>
-            <h2 id="audience-title">Ideal Customer Profile</h2>
-            <p id="audience-body">Audience analysis will appear here...</p>
-            <div id="audience-tags"></div>
-        </div>
-    </div>
+1”>title>OMLAH Beta 0.1/title>/head> body style body style=“font-family:system-ui, sans-serif; background:#0b1220;color:#e6f1ff;margin:0;”>
 
-    <div class="footer">
-        <p>Built with ❤️ on GitHub Pages</p>
-    </div>
-</div>
+main style=“max-width:960px;margin:40px auto;padding:016px;”>
 
-<script>
-    const strategies = {
-        copy: [
-            { title: "Revolutionize Your Routine", body: "Discover a smarter way to experience {product}. Designed for modern lifestyles, it combines innovation with simplicity to deliver results you can feel from day one. Join thousands who have already made the switch." },
-            { title: "The Future is Here", body: "Why settle for ordinary when {product} offers extraordinary? Engineered with precision and crafted for excellence, this is more than just a product—it's a lifestyle upgrade that pays for itself." },
-            { title: "Made for You", body: "{product} understands what you need. With intuitive design and unmatched quality, it fits seamlessly into your life. Don't just buy a product—invest in an experience that grows with you." }
-        ],
-        visual: [
-            { title: "Clean & Minimalist", body: "Use a clean white background with bold accent colors. Focus on product photography with soft natural lighting. Incorporate geometric shapes and plenty of negative space to convey sophistication.", tags: ["Minimal", "Clean", "Modern"] },
-            { title: "Vibrant & Energetic", body: "Leverage bold, saturated colors with dynamic angles and motion blur effects. Use lifestyle photography showing real people in action. Create visual rhythm with overlapping elements and strong typography.", tags: ["Bold", "Dynamic", "Youthful"] },
-            { title: "Warm & Trustworthy", body: "Employ earth tones and soft gradients. Use authentic photography with warm lighting. Incorporate hand-drawn elements and organic shapes to create a human, approachable feel that builds trust instantly.", tags: ["Warm", "Organic", "Authentic"] }
-        ],
-        audience: [
-            { title: "Young Professionals", body: "Ages 25-35, urban dwellers who value efficiency and quality. They are tech-savvy, socially conscious, and willing to pay premium for products that save time and align with their values. Active on Instagram and LinkedIn.", tags: ["Millennials", "Urban", "Tech-Savvy"] },
-            { title: "Conscious Consumers", body: "Ages 30-50 who prioritize sustainability and ethical production. They research before buying and value transparency. This group has strong purchasing power and influences family and peer buying decisions.", tags: ["Eco-Conscious", "High Income", "Influencers"] },
-            { title: "Early Adopters", body: "Ages 18-30 who love trying new things first. They are active on TikTok and Twitter, value uniqueness, and love sharing discoveries with their network. Speed and novelty are their primary motivators.", tags: ["Gen Z", "Trendsetters", "Social Media"] }
-        ]
-    };
+h1 style h1 style=“font-size:28px;margin:008px;”>OMLAH Beta0.1 /h1p style=“margin:0 0 24px;”>输入代码查看 OMLAH评分与市场温度。
 
-    function generate() {
-        const desc = document.getElementById('product-desc').value.trim();
-        if (!desc) {
-            alert('Please enter a product description first!');
-            return;
-        }
+input type=“text” placeholder=“输入股票代码,如 TSLA”>
 
-        const productName = desc.split(' ').slice(0, 3).join(' ');
+section style=“margin-top:24px;”>div style
 
-        document.getElementById('generate-btn').disabled = true;
-        document.getElementById('results').classList.remove('active');
-        document.getElementById('loading').classList.add('active');
+=“padding:16px;border-radius:12px;background:#121a33;”>暂时评分: 待计算 /div
 
-        setTimeout(() => {
-            const copy = strategies.copy[Math.floor(Math.random() * strategies.copy.length)];
-            const visual = strategies.visual[Math.floor(Math.random() * strategies.visual.length)];
-            const audience = strategies.audience[Math.floor(Math.random() * strategies.audience.length)];
+section section style style
 
-            document.getElementById('copy-title').textContent = copy.title;
-            document.getElementById('copy-body').textContent = copy.body.replace(/{product}/g, productName);
+margin-top:16px;background:#0f1624
 
-            document.getElementById('visual-title').textContent = visual.title;
-            document.getElementById('visual-body').textContent = visual.body;
-            document.getElementById('visual-tags').innerHTML = visual.tags.map(t => `<span class="tag">${t}</span>`).join('');
+;”> h3 style style=“margin-top:0;”>市场温度计 
 
-            document.getElementById('audience-title').textContent = audience.title;
-            document.getElementById('audience-body').textContent = audience.body;
-            document.getElementById('audience-tags').innerHTML = audience.tags.map(t => `<span class="tag">${t}</span>`).join('');
+p 沸腾/冷却程度: 待计算
 
-            document.getElementById('loading').classList.remove('active');
-            document.getElementById('results').classList.add('active');
-            document.getElementById('generate-btn').disabled = false;
-        }, 2000);
-    }
-</script>
+/p /section /main
 
-----
-贴完后，页面滑到最下面，点绿色的 "Commit new file" 按钮。
-贴好了告诉我！
+body
+
+保存后,用 500910.github.io 打开看看。如果看到深色背景和这些标题,你就告诉我:「我看到了 Beta0.1。」
 
 ￼
 
