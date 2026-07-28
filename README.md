@@ -39,3 +39,4 @@ async function startVideoRecording() {
         alert('無法存取攝影機：' + e.message);
     }
 }
+fix
