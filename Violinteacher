@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Violin Teacher</title>
+<style>
+body{background:#0f172a;color:#e2e8f0;font-family:system-ui,sans-serif;max-width:800px;margin:40px auto;padding:0 16px}
+h1{color:#818cf8}
+video{width:100%;border-radius:12px;background:#000}
+.btn{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;padding:12px 24px;border-radius:12px;cursor:pointer;font-size:14px;margin-right:8px}
+.btn-red{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.btn-green{background:linear-gradient(135deg,#10b981,#059669)}
+.box{background:rgba(30,41,59,.7);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;margin-bottom:16px}
+</style>
+</head>
+<body>
+<h1>🎻 AI Violin Teacher</h1>
+<div class="box">
+<h3>📹 錄影預覽</h3>
+<video id="v" autoplay muted playsinline></video>
+<div style="margin-top:12px">
+<button class="btn" onclick="start()">🔴 開始錄影</button>
+<button class="btn btn-red" onclick="stop()">⏹ 停止</button>
+<button class="btn btn-green" onclick="pb()" id="b3" style="display:none">▶ 回放</button>
+<button class="btn" onclick="dl()" id="b4" style="display:none;background:#334155">💾 下載</button>
+</div>
+</div>
+<div class="box">
+<h3>🎼 練習曲目</h3>
+<p>🎵 小星星變奏曲 (Twinkle Twinkle)</p>
+<p style="color:#94a3b8;font-size:14px">點擊「開始錄影」啟動攝影機，錄製你的演奏！</p>
+</div>
+<script>
+let mr=null,rc=[],st=null,u=null;
+async function start(){
+try{
+st=await navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user'}});
+document.getElementById('v').srcObject=st;
+mr=new MediaRecorder(st);
+rc=[];
+mr.ondataavailable=e=>{if(e.data.size>0)rc.push(e.data)};
+mr.onstop=()=>{
+let b=new Blob(rc,{type:'video/webm'});
+u=URL.createObjectURL(b);
+document.getElementById('v').srcObject=null;
+document.getElementById('v').src=u;
+document.getElementById('v').controls=true;
+document.getElementById('b3').style.display='inline-block';
+document.getElementById('b4').style.display='inline-block'
+};
+mr.start()
+}catch(e){alert('無法存取攝影機：'+e.message)}
+}
+function stop(){
+if(mr&&mr.state!=='inactive')mr.stop();
+if(st)st.getTracks().forEach(t=>t.stop())
+}
+function pb(){document.getElementById('v').play()}
+function dl(){
+if(!u)return;
+let a=document.createElement('a');
+a.href=u;
+a.download='violin-'+new Date().toISOString().slice(0,19).replace(/:/g,'-')+'.webm';
+a.click()
+}
+</script>
+</body>
+</html>
