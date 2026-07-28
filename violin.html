@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>視頻錄音功能預覽</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; padding: 15px; }
+    video { width: 100%; max-width: 400px; background: #000; border-radius: 8px; margin-top: 10px; }
+    button { padding: 12px 20px; font-size: 16px; margin: 5px 5px 15px 0; border-radius: 6px; border: none; background: #007aff; color: white; }
+    button:disabled { background: #ccc; }
+  </style>
+</head>
+<body>
+
+  <h3>視頻錄音功能預覽</h3>
+
+  <div>
+    <button id="startBtn" onclick="startVideoRecording()">開始錄影</button>
+    <button id="stopBtn" onclick="stopVideoRecording()" disabled>停止錄影</button>
+  </div>
+
+  <h4>即時預覽：</h4>
+  <video id="videoPreview" autoplay playsinline muted></video>
+
+  <h4>錄製回放：</h4>
+  <video id="videoPlayback" controls playsinline></video>
+
+  <script>
+    let currentStream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    async function startVideoRecording() {
+      try {
+        // 取得鏡頭與麥克風（已修正全形引號與註解錯誤）
+        currentStream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: {
+            facingMode: "user", // 前置鏡頭
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        });
+
+        // 顯示即時預覽畫面
+        const videoPreview = document.getElementById('videoPreview');
+        videoPreview.srcObject = currentStream;
+        videoPreview.play();
+
+        // 判斷 iOS / Safari 支援的錄影格式
+        let mimeType = 'video/webm;codecs=vp9,opus';
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = 'video/mp4';
+        }
+
+        mediaRecorder = new MediaRecorder(currentStream, { mimeType });
+        recordedChunks = [];
+
+        mediaRecorder.ondataavailable = e => {
+          if (e.data && e.data.size > 0) {
+            recordedChunks.push(e.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          // 打包錄好的影片檔
+          const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'video/mp4' });
+          const url = URL.createObjectURL(blob);
+
+          // 載入到回放播放器
+          const playback = document.getElementById('videoPlayback');
+          playback.src = url;
+
+          // 關閉相機與麥克風串流
+          if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+          }
+
+          document.getElementById('startBtn').disabled = false;
+          document.getElementById('stopBtn').disabled = true;
+        };
+
+        mediaRecorder.start();
+
+        document.getElementById('startBtn').disabled = true;
+        document.getElementById('stopBtn').disabled = false;
+
+      } catch (e) {
+        alert("無法存取攝影機: " + e.message);
+      }
+    }
+
+    function stopVideoRecording() {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
+    }
+  </script>
+
+</body>
+</html>
