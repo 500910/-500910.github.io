@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OMLAH AI Investment Lab</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- ECharts CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { background-color: #0b1120; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .card-dark { background-color: #151d30; border: 1px solid #1e293b; }
+  </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen flex flex-col justify-between pb-20 relative">
+
+  <!-- Header -->
+  <header class="p-4 flex items-center justify-between border-b border-slate-800">
+    <div class="flex items-center space-x-2">
+      <i data-lucide="menu" class="w-6 h-6 text-slate-400"></i>
+    </div>
+    <div class="text-center">
+      <h1 class="text-lg font-bold tracking-wider text-cyan-400 flex items-center justify-center gap-1">
+        <i data-lucide="brain-circuit" class="w-5 h-5"></i> OMLAH
+      </h1>
+      <p class="text-[10px] text-slate-400 -mt-1 tracking-widest">AI INVESTMENT LAB</p>
+    </div>
+    <div class="relative">
+      <i data-lucide="bell" class="w-6 h-6 text-slate-400"></i>
+      <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">3</span>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="flex justify-around text-sm border-b border-slate-800 text-slate-400 py-2">
+    <button class="text-emerald-400 font-medium border-b-2 border-emerald-400 pb-1">仪表盘</button>
+    <button>股票分析</button>
+    <button>持仓管理</button>
+    <button>复盘实验室</button>
+    <button>市场扫描</button>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="p-4 space-y-4 overflow-y-auto">
+
+    <!-- 1. 市场温度 Gauge Section -->
+    <div class="card-dark rounded-xl p-4 relative">
+      <div class="flex justify-between items-center mb-2">
+        <div class="flex items-center space-x-1 text-sm font-semibold">
+          <span class="text-red-400">🌡️ 市场温度</span>
+          <i data-lucide="info" class="w-3.5 h-3.5 text-slate-500"></i>
+        </div>
+        <span class="text-[11px] text-slate-500">2026-07-24 收盘更新</span>
+      </div>
+
+      <div class="flex items-center justify-between my-2">
+        <!-- ECharts 仪表盘容器 -->
+        <div id="gaugeChart" class="w-36 h-36"></div>
+        <div class="flex-1 pl-4">
+          <div class="text-sm font-bold text-orange-400">市场情绪：乐观</div>
+          <p class="text-[11px] text-slate-400 mt-1">指数上涨，成交量放大，资金偏向科技成长股</p>
+          <div class="grid grid-cols-3 gap-1 mt-3 text-center text-[10px]">
+            <div class="bg-slate-800/60 p-1 rounded">
+              <div class="text-slate-400">涨跌家数</div>
+              <div class="text-emerald-400 font-bold mt-0.5">2763 <span class="text-slate-500">/</span> <span class="text-red-400">1253</span></div>
+            </div>
+            <div class="bg-slate-800/60 p-1 rounded">
+              <div class="text-slate-400">恐慌贪婪指数</div>
+              <div class="text-orange-400 font-bold mt-0.5">68</div>
+            </div>
+            <div class="bg-slate-800/60 p-1 rounded">
+              <div class="text-slate-400">VIX 恐慌指数</div>
+              <div class="text-emerald-400 font-bold mt-0.5">15.21</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 三大指数 -->
+      <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-800/80 text-center">
+        <div>
+          <div class="text-[10px] text-slate-400">S&P 500</div>
+          <div class="text-xs font-semibold">5,564.41</div>
+          <div class="text-[10px] text-emerald-400">+1.02%</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-slate-400">NASDAQ</div>
+          <div class="text-xs font-semibold">18,352.76</div>
+          <div class="text-[10px] text-emerald-400">+1.18%</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-slate-400">DOW JONES</div>
+          <div class="text-xs font-semibold">40,358.09</div>
+          <div class="text-[10px] text-emerald-400">+0.53%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 今日三条大鱼 (Cards) -->
+    <div>
+      <div class="flex justify-between items-center mb-2">
+        <div class="flex items-center space-x-1 text-sm font-semibold">
+          <span>🐟 今日三条大鱼</span>
+          <i data-lucide="info" class="w-3.5 h-3.5 text-slate-500"></i>
+        </div>
+        <span class="text-[11px] text-slate-500">基于 OMLAH 评分 &gt;</span>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2">
+        <!-- Stock 1 -->
+        <div class="card-dark p-2.5 rounded-lg relative">
+          <span class="absolute top-1 left-1 bg-amber-500/20 text-amber-400 text-[10px] px-1.5 py-0.5 rounded font-bold">1</span>
+          <div class="text-right text-xs font-bold text-emerald-400">NVDA</div>
+          <div class="text-center my-1">
+            <div class="text-sm font-bold">129.37</div>
+            <div class="text-[10px] text-emerald-400">+3.45%</div>
+          </div>
+          <div class="flex justify-between items-center text-[10px] text-slate-400 mt-2">
+            <span>OMLAH评分</span>
+            <span class="text-emerald-400 font-bold text-sm">88</span>
+          </div>
+        </div>
+        <!-- Stock 2 -->
+        <div class="card-dark p-2.5 rounded-lg relative">
+          <span class="absolute top-1 left-1 bg-slate-700 text-slate-300 text-[10px] px-1.5 py-0.5 rounded font-bold">2</span>
+          <div class="text-right text-xs font-bold text-emerald-400">TSLA</div>
+          <div class="text-center my-1">
+            <div class="text-sm font-bold">269.89</div>
+            <div class="text-[10px] text-emerald-400">+2.78%</div>
+          </div>
+          <div class="flex justify-between items-center text-[10px] text-slate-400 mt-2">
+            <span>OMLAH评分</span>
+            <span class="text-emerald-400 font-bold text-sm">82</span>
+          </div>
+        </div>
+        <!-- Stock 3 -->
+        <div class="card-dark p-2.5 rounded-lg relative">
+          <span class="absolute top-1 left-1 bg-amber-800/40 text-amber-600 text-[10px] px-1.5 py-0.5 rounded font-bold">3</span>
+          <div class="text-right text-xs font-bold text-emerald-400">GOOG</div>
+          <div class="text-center my-1">
+            <div class="text-sm font-bold">184.92</div>
+            <div class="text-[10px] text-emerald-400">+2.32%</div>
+          </div>
+          <div class="flex justify-between items-center text-[10px] text-slate-400 mt-2">
+            <span>OMLAH评分</span>
+            <span class="text-emerald-400 font-bold text-sm">79</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 我的持仓 (Holdings Table) -->
+    <div class="card-dark rounded-xl p-3">
+      <div class="flex justify-between items-center mb-3">
+        <span class="text-sm font-semibold">📈 我的持仓 (5)</span>
+        <span class="text-xs text-emerald-400 font-medium">持仓总浮盈 +$477.12 (+3.07%)</span>
+      </div>
+
+      <table class="w-full text-left text-xs">
+        <thead class="text-slate-500 border-b border-slate-800 pb-1 text-[11px]">
+          <tr>
+            <th class="pb-1">代码/名称</th>
+            <th class="pb-1 text-center">持仓</th>
+            <th class="pb-1 text-right">成本/现价</th>
+            <th class="pb-1 text-right">盈亏</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/50">
+          <tr>
+            <td class="py-2"><div class="font-bold">AVGO</div><div class="text-[10px] text-slate-500">Broadcom</div></td>
+            <td class="text-center">6</td>
+            <td class="text-right"><div class="text-slate-400">399.50</div><div>425.18</div></td>
+            <td class="text-right text-emerald-400"><div class="font-bold">+154.08</div><div class="text-[10px]">+6.42%</div></td>
+          </tr>
+          <tr>
+            <td class="py-2"><div class="font-bold">GOOG</div><div class="text-[10px] text-slate-500">Alphabet</div></td>
+            <td class="text-center">4</td>
+            <td class="text-right"><div class="text-slate-400">320.70</div><div>334.21</div></td>
+            <td class="text-right text-emerald-400"><div class="font-bold">+54.04</div><div class="text-[10px]">+4.21%</div></td>
+          </tr>
+          <tr>
+            <td class="py-2"><div class="font-bold">TSLA</div><div class="text-[10px] text-slate-500">Tesla</div></td>
+            <td class="text-center">1</td>
+            <td class="text-right"><div class="text-slate-400">333.01</div><div>336.71</div></td>
+            <td class="text-right text-emerald-400"><div class="font-bold">+3.70</div><div class="text-[10px]">+1.11%</div></td>
+          </tr>
+          <tr>
+            <td class="py-2"><div class="font-bold">MU</div><div class="text-[10px] text-slate-500">Micron</div></td>
+            <td class="text-center">5</td>
+            <td class="text-right"><div class="text-slate-400">885.00</div><div>934.00</div></td>
+            <td class="text-right text-emerald-400"><div class="font-bold">+245.00</div><div class="text-[10px]">+5.54%</div></td>
+          </tr>
+          <tr>
+            <td class="py-2"><div class="font-bold">VOO</div><div class="text-[10px] text-slate-500">Vanguard S&P 500</div></td>
+            <td class="text-center">5</td>
+            <td class="text-right"><div class="text-slate-400">322.65</div><div>326.71</div></td>
+            <td class="text-right text-emerald-400"><div class="font-bold">+20.30</div><div class="text-[10px]">+1.26%</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-[#0f172a] border-t border-slate-800 flex justify-around py-2 text-[10px] text-slate-400">
+    <div class="flex flex-col items-center text-emerald-400">
+      <i data-lucide="home" class="w-5 h-5"></i>
+      <span>首页</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <i data-lucide="star" class="w-5 h-5"></i>
+      <span>自选股</span>
+    </div>
+    <div class="flex flex-col items-center -mt-4">
+      <div class="bg-cyan-500 p-2.5 rounded-full text-slate-950 shadow-lg">
+        <i data-lucide="plus" class="w-6 h-6"></i>
+      </div>
+      <span class="mt-1">记录交易</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <i data-lucide="line-chart" class="w-5 h-5"></i>
+      <span>行情</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <i data-lucide="user" class="w-5 h-5"></i>
+      <span>我的</span>
+    </div>
+  </footer>
+
+  <script>
+    // 初始化 图标
+    lucide.createIcons();
+
+    // 初始化 ECharts 仪表盘
+    const chartDom = document.getElementById('gaugeChart');
+    const myChart = echarts.init(chartDom);
+    const option = {
+      series: [{
+        type: 'gauge',
+        startAngle: 180,
+        endAngle: 0,
+        min: 0,
+        max: 100,
+        pointer: { icon: 'path://M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z', length: '60%', width: 4, offsetCenter: [0, '10%'], itemStyle: { color: '#f97316' } },
+        axisLine: {
+          lineStyle: {
+            width: 10,
+            color: [
+              [0.3, '#22c55e'],
+              [0.7, '#f97316'],
+              [1, '#ef4444']
+            ]
+          }
+        },
+        splitLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { show: false },
+        detail: {
+          valueAnimation: true,
+          formatter: '{value}\n偏多',
+          offsetCenter: [0, '30%'],
+          fontSize: 14,
+          fontWeight: 'bold',
+          color: '#f97316'
+        },
+        data: [{ value: 68 }]
+      }]
+    };
+    myChart.setOption(option);
+  </script>
+</body>
+</html>
