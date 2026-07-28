@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Violin Teacher</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/vexflow@4.2.2/build/cjs/vexflow.js"></script>
+<style>
+*{font-family:system-ui,-apple-system,sans-serif}body{background:#0f172a;color:#e2e8f0;padding:16px;max-width:900px;margin:0 auto}
+.glass{background:rgba(30,41,59,.7);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;margin-bottom:16px}
+.btn{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;padding:10px 20px;border-radius:12px;cursor:pointer;font-size:13px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,.4)}
+.btn-red{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.btn-green{background:linear-gradient(135deg,#10b981,#059669)}
+.btn-gray{background:#334155;color:#cbd5e1}
+.tab{border-bottom:2px solid transparent;color:#94a3b8;padding:8px 0;margin-right:20px;background:none;border:none;cursor:pointer;font-size:14px}
+.tab.on{border-color:#6366f1;color:#818cf8}
+video{width:100%;border-radius:12px;background:#000;aspect-ratio:16/9}
+#pc{width:100%;height:100px;border-radius:8px;background:#1e293b}
+.pulse{animation:p 1.5s infinite}@keyframes p{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}50%{box-shadow:0 0 0 12px rgba(239,68,68,0)}}
+</style>
+</head>
+<body>
+
+<header style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+<div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:20px">🎻</div>
+<div><h1 style="margin:0;font-size:18px">AI Violin Teacher</h1><p style="margin:0;font-size:12px;color:#94a3b8 style="margin:0;font-size:12px;color:#94a3b8">智能小提琴老師</p></div>
+<span id="st" style="margin-left:auto;font-size:12px;padding:6px 12px;border-radius:20px;background:#1e293b;color:#94a3b8">● 未連接</span>
+</header>
+
+<div style="border-bottom:1px solid #334155;margin-bottom:20px">
+<button class="tab on" onclick="sw('p')">🎵 練習</button>
+<button class="tab" onclick="sw('r')">📹 錄影</button>
+<button class="tab" onclick="sw('h')">📊 紀錄</button>
+</div>
+
+<div id="p">
+<div class="glass">
+<h3 style="margin-top:0">📹 錄影 <span id="tm" style="color:#ef4444;float:right;display:none">00:00</span></h3>
+<video id="v" autoplay muted playsinline></video>
+<div id="ph" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#64748b">🎻 點擊開始錄影</div>
+<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+<button class="btn" id="b1" onclick="start()">🔴 開始錄影</button>
+<button class="btn btn-red" id="b2" onclick="stop()" style="display:none">⏹ 停止</button>
+<button class="btn btn-green" id="b3" onclick="pb()" style="display:none">▶ 回放</button>
+<button class="btn btn-gray" id="b4" onclick="dl()" style="display:none">💾 下載</button>
+</div>
+</div>
+
+<div class="glass">
+<h3 style="margin-top:0">🎼 樂譜 <select id="sel" onchange="load(this.value)" style="float:right;background:#1e293b;border:1px solid #475569;color:#e2e8f0;padding:4px 8px;border-radius:6px">
+<option value="twinkle">小星星</option><option value="ode">歡樂頌</option><option value="g">G大調音階</option><option value="d">D大調音階</option><option value="a">A大調音階</option>
+</select></h3>
+<div id="sheet" style="background:#fff;border-radius:8px;min-height:160px"></div>
+<p style="font-size:12px;color:#94a3b8">🎯 <span id="tn">小星星變奏曲</span> <span id="cn" style="float:right;color:#10b981;font-family:monospace">--</span></p>
+</div>
+
+<div class="glass">
+<h3 style="margin-top:0">📊 音準 <button class="btn btn-gray" onclick="ta()" style="float:right;padding:6px 12px;font-size:12px">🔊 開始分析</button></h3>
+<canvas id="pc"></canvas>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;font-size:12px">
+<div style="background:#1e293b;border-radius:10px;padding:10px;text-align:center"><div style="color:#94a3b8">音量</div><div id="vol" style="font-size:18px;font-weight:bold;color:#f59e0b">0%</div></div>
+<div style="background:#1e293b;border-radius:10px;padding:10px;text-align:center"><div style="color:#94a3b8">偏差</div><div id="dev" style="font-size:18px;font-weight:bold;color:#f43f5e">--</div></div>
+<div style="background:#1e293b;border-radius:10px;padding:10px;text-align:center"><div style="color:#94a3b8">穩定</div><div id="stab" style="font-size:18px;font-weight:bold;color:#06b6d4">--</div></div>
+<div style="background:#1e293b;border-radius:10px;padding:10px;text-align:center"><div style="color:#94a3b8">時長</div><div id="dur" style="font-size:18px;font-weight:bold;color:#a855f7">0s</div></div>
+</div>
+</div>
+
+<div class="glass">
+<h3 style="margin-top:0">🤖 AI 評分</h3>
+<div style="display:flex;gap:16px;align-items:center">
+<svg width="100" height="100" viewBox="0 0 100 100" style="transform:rotate(-90deg);flex-shrink:0">
+<circle cx="50" cy="50" r="42" fill="none" stroke="#1e293b" stroke-width="8"/>
+<circle id="ring" cx="50" cy="50" r="42" fill="none" stroke="#6366f1" stroke-width="8" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264"/>
+</svg>
+<div style="flex:1">
+<div style="font-size:36px;font-weight:bold" id="score">--</div>
+<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8"><span>音準</span><span id="sp">--</span></div><div style="background:#334155;height:5px;border-radius:3px;margin-top:4px"><div id="bp" style="background:#6366f1;height:5px;border-radius:3px;width:0%;transition:.5s"></div></div></div>
+<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8"><span>節奏</span><span id="sr">--</span></div><div style="background:#334155;height:5px;border-radius:3px;margin-top:4px"><div id="br" style="background:#10b981;height:5px;border-radius:3px;width:0%;transition:.5s"></div></div></div>
+<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8"><span>音色</span><span id="stn">--</span></div><div style="background:#334155;height:5px;border-radius:3px;margin-top:4px"><div id="bt" style="background:#f59e0b;height:5px;border-radius:3px;width:0%;transition:.5s"></div></div></div>
+</div>
+</div>
+<div id="fb" style="margin-top:12px;padding:12px;background:#1e293b;border-radius:10px;font-size:13px;color:#94a3b8;line-height:1.7"></div>
+</div>
+</div>
+
+<div id="r" style="display:none">
+<div class="glass">
+<h3 style="margin-top:0">📹 回放</h3>
+<video id="pv" controls style="background:#000"></video>
+</div>
+<div class="glass">
+<h3 style="margin-top:0">錄影檔案</h3>
+<div id="rl"></div>
+</div>
+</div>
+
+<div id="h" style="display:none">
+<div class="glass">
+<h3 style="margin-top:0">📊 練習紀錄</h3>
+<table style="width:100%;font-size:13px;border-collapse:collapse">
+<thead><tr style="color:#94a3b8;border-bottom:1px solid #334155"><th style="text-align:left;padding:8px">日期</th><th style="text-align:left;padding:8px">曲目</th><th style="text-align:center;padding:8px">時長</th><th style="text-align:center;padding:8px">總分</th><th style="text-align:center;padding:8px"></th></tr></thead>
+<tbody id="ht"></tbody>
+</table>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+<div class="glass" style="text-align:center"><div style="font-size:28px;font-weight:bold;color:#818cf8" id="ts">0</div><div style="font-size:12px;color:#94a3b8">總次數</div></div>
+<div class="glass" style="text-align:center"><div style="font-size:28px;font-weight:bold;color:#10b981" id="as">--</div><div style="font-size:12px;color:#94a3b8">平均分</div></div>
+<div class="glass" style="text-align:center"><div style="font-size:28px;font-weight:bold;color:#f59e0b" id="tt">0</div><div style="font-size:12px;color:#94a3b8">總時長(分)</div></div>
+</div>
+</div>
+
+<script>
+let mr=null,rc=[],st=null,ac=null,an=null,as=null,rec=false,aa=false,rt=0,ri=null,ai=null,ph=[],dn=[],rs=JSON.parse(localStorage.getItem('vr')||'[]'),sh=JSON.parse(localStorage.getItem('vh')||'[]'),cp='twinkle',pt=0,ctx=null;
+const PC={twinkle:{n:'小星星變奏曲',s:['C4','C4','G4','G4','A4','A4','G4','F4','F4','E4','E4','D4','D4','C4'],b:100},ode:{n:'歡樂頌',s:['E4','E4','F4','G4','G4','F4','E4','D4','C4','C4','D4','E4','E4','D4','D4'],b:120},g:{n:'G大調音階',s:['G3','A3','B3','C4','D4','E4','F#4','G4','G4','F#4','E4','D4','C4','B3','A3','G3'],b:80},d:{n:'D大調音階',s:['D3','E3','F#3','G3','A3','B3','C#4','D4','D4','C#4','B3','A3','G3','F#3','E3','D3'],b:80},a:{n:'A大調音階',s:['A3','B3','C#4','D4','E4','F#4','G#4','A4','A4','G#4','F#4','E4','D4','C#4','B3','A3'],b:80}};
+const NF={'C3':130.81,'C#3':138.59,'D3':146.83,'D#3':155.56,'E3':164.81,'F3':174.61,'F#3':185,'G3':196,'G#3':207.65,'A3':220,'A#3':233.08,'B3':246.94,'C4':261.63,'C#4':277.18,'D4':293.66,'D#4':311.13,'E4':329.63,'F4':349.23,'F#4':369.99,'G4':392,'G#4':415.3,'A4':440,'A#4':466.16,'B4':493.88,'C5':523.25,'C#5':554.37,'D5':587.33,'D#5':622.25,'E5':659.25,'F5':698.46,'F#5':739.99,'G5':783.99,'G#5':830.61,'A5':880,'A#5':932.33,'B5':987.77};
+document.addEventListener('DOMContentLoaded',()=>{load('twinkle');rh();rr();initC()});
+function sw(t){['p','r','h'].forEach(x=>{document.getElementById(x).style.display=x===t?'block':'none'});document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',['p','r','h'][i]===t))}
+async function start(){try{st=await navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}}});document.getElementById('v').srcObject=st;document.getElementById('ph').style.display='none';mr=new MediaRecorder(st,{mimeType:'video/webm;codecs=vp9,opus'});rc=[];mr.ondataavailable=e=>{if(e.data.size>0)rc.push(e.data)};mr.onstop=()=>{const b=new Blob(rc,{type:'video/webm'}),u=URL.createObjectURL(b),d=Math.floor((Date.now()-rt)/1000),id=Date.now();rs.unshift({id,u,d,date:new Date().toISOString(),p:cp});localStorage.setItem('vr',JSON.stringify(rs));document.getElementById('b3').style.display='inline-block';document.getElementById('b4').style.display='inline-block';document.getElementById('pv').src=u;rr();cs(d)};mr.start(100);rec=true;rt=Date.now();ri=setInterval(()=>{const e=Math.floor((Date.now()-rt)/1000),m=String(Math.floor(e/60)).padStart(2,'0'),s=String(e%60).padStart(2,'0');document.getElementById('tm').textContent=m+':'+s;document.getElementById('dur').textContent=e+'s'},1000);document.getElementById('b1').style.display='none';document.getElementById('b2').style.display='inline-block';document.getElementById('tm').style.display='inline';us('rec');if(!aa)ta()}catch(e){alert('無法存取攝影機：'+e.message)}}
+function stop(){if(mr&&mr.state!=='inactive')mr.stop();if(st)st.getTracks().forEach(t=>t.stop());rec=false;clearInterval(ri);document.getElementById('b2').style.display='none';document.getElementById('b1').style.display='inline-block';document.getElementById('tm').style.display='none';us('con')}
+function pb(){document.getElementById('pv').play()}
+function dl(){const a=document.createElement('a');a.href=document.getElementById('pv').src;a.download='violin-'+new Date().toISOString().slice(0,19).replace(/:/g,'-')+'.webm';a.click()}
+async function ta(){const btn=document.querySelector('.btn-gray');if(aa){aa=false;btn.textContent='🔊 開始分析';if(as)as.getTracks().forEach(t=>t.stop());if(ai)cancelAnimationFrame(ai);us('con');return}try{as=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,sampleRate:44100}});ac=new(window.AudioContext||webkitAudioContext)();const src=ac.createMediaStreamSource(as);an=ac.createAnalyser();an.fftSize=4096;an.smoothingTimeConstant=.8;src.connect(an);aa=true;btn.textContent='⏹ 停止分析';pt=Date.now();ph=[];dn=[];us('ana');al()}catch(e){alert('無法存取麥克風：'+e.message)}}
+function al(){if(!aa)return;const buf=new Float32Array(an.fftSize);an.getFloatTimeDomainData(buf);const f=auto(buf,ac.sampleRate),v=gv(buf);document.getElementById('vol').textContent=Math.round(v*100)+'%';if(f>0&&v>.01){const n=fn(f);document.getElementById('cn').textContent=n;ph.push({f,n,t:Date.now(),v});if(ph.length>500)ph.shift();const ct=gt();if(ct&&NF[ct]){const d=1200*Math.log2(f/NF[ct]);document.getElementById('dev').textContent=(d>0?'+':'')+d.toFixed(1);document.getElementById('dev').style.color=Math.abs(d)<20?'#10b981':Math.abs(d)<50?'#f59e0b':'#f43f5e'}document.getElementById('stab').textContent=gs()}dc();document.getElementById('dur').textContent=Math.floor((Date.now()-pt)/1000)+'s';ai=requestAnimationFrame(al)}
+function auto(buf,sr){let sz=buf.length,rms=0;for(let i=0;i<sz;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/sz);if(rms<.01)return-1;let r1=0,r2=sz-1,th=.2;for(let i=0;i<sz/2;i++)if(Math.abs(buf[i])<th){r1=i;break}for(let i=1;i<sz/2;i++)if(Math.abs(buf[sz-i])<th){r2=sz-i;break}buf=buf.slice(r1,r2);sz=buf.length;let c=new Array(sz).fill(0);for(let i=0;i<sz;i++)for(let j=0;j<sz-i;j++)c[i]+=buf[j]*buf[j+i];let d=0;while(c[d]>c[d+1])d++;let mv=-1,mp=-1;for(let i=d;i<sz;i++)if(c[i]>mv){mv=c[i];mp=i}let T0=mp,x1=c[T0-1],x2=c[T0],x3=c[T0+1],a=(x1+x3-2*x2)/2,b=(x3-x1)/2;if(a)T0=T0-b/(2*a);return sr/T0}
+function gv(buf){let s=0;for(let i=0;i<buf.length;i++)s+=buf[i]*buf[i];return Math.sqrt(s/buf.length)}
+function fn(f){const nm=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],m=Math.round(69+12*Math.log2(f/440));return nm[m%12]+(Math.floor(m/12)-1)}
+function gt(){const p=PC[cp];if(!p||!p.s.length)return null;return p.s[Math.floor(((Date.now()-pt)/1000)/(60/p.b))%p.s.length]}
+function gs(){if(ph.length<10)return'--';const r=ph.slice(-20),f=r.map(x=>x.f),m=f.reduce((a,b)=>a+b,0
