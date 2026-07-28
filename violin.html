@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摄像头测试</title>
+</head>
+<body style="text-align: center; font-family: sans-serif; padding-top: 30px;">
+
+    <h2>录像测试</h2>
+    
+    <button onclick="openCamera()" style="font-size: 18px; padding: 10px 20px;">打开摄像头</button>
+    
+    <br><br>
+    
+    <video id="webcam" autoplay playsinline muted style="width: 90%; max-width: 500px; background: #000; height: 300px;"></video>
+
+    <script>
+        async function openCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: { facingMode: "user" }
+                });
+                document.getElementById('webcam').srcObject = stream;
+                alert('连接成功！');
+            } catch (err) {
+                alert('失败原因: ' + err.name + ' - ' + err.message);
+            }
+        }
+    </script>
+</body>
+</html>
