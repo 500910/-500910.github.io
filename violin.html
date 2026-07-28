@@ -1,0 +1,123 @@
+好的！我们保留 OMLAH，新建一个 violin.html 文件。这样：
+•  500910.github.io = OMLAH（保留）
+•  500910.github.io/violin.html = AI 小提琴老师（新）
+✅ 文件名
+在 GitHub 创建新文件时，文件名写：
+violin.html
+----
+📋 第 1 段：HTML 头部（复制这一段）
+复制完这一段后，继续复制下一段 👇
+📋 第 2 段：Header + 錄影 & 樂譜區（复制这一段）
+<header class="glass sticky top-0 z-50 px-6 py-4">
+<div class="max-w-6xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">🎻</div>
+<div>
+<h1 class="text-xl font-bold text-white">AI Violin Teacher</h1>
+<p class="text-xs text-slate-400">智能小提琴老師</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div id="connectionStatus" class="flex items-center gap-2 text-xs px-3 py-1.5 rounded-full bg-slate-800 text-slate-400">
+<span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
+<span id="statusText">未連接</span>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+
+    <div class="flex gap-6 border-b border-slate-700 pb-1">
+        <button onclick="switchTab('practice')" id="tab-practice" class="tab-active pb-3 text-sm font-medium transition-colors" style="border-bottom:2px solid #6366f1;color:#818cf8;">🎵 練習模式</button>
+        <button onclick="switchTab('record')" id="tab-record" class="pb-3 text-sm font-medium transition-colors" style="border-bottom:2px solid transparent;color:#94a3b8;">📹 錄影回放</button>
+        <button onclick="switchTab('history')" id="tab-history" class="pb-3 text-sm font-medium transition-colors" style="border-bottom:2px solid transparent;color:#94a3b8;">📊 練習紀錄</button>
+    </div>
+
+    <div id="panel-practice" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="glass rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-white flex items-center gap-2">📹 錄影預覽</h2>
+                    <span id="recordingTimer" class="text-2xl font-mono font-bold text-red-400 hidden">00:00</span>
+                </div>
+                <div class="relative rounded-xl overflow-hidden bg-black aspect-video">
+                    <video id="videoPreview" class="w-full h-full object-cover" autoplay muted playsinline></video>
+                    <div id="recordingIndicator" class="absolute top-4 right-4 w-3 h-3 rounded-full bg-red-500 hidden recording-pulse"></div>
+                    <div id="placeholderOverlay" class="absolute inset-0 flex items-center justify-center text-slate-500">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">🎻</div>
+                            <p class="text-sm">點擊「開始錄影」啟動攝影機</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+
+    <header class="glass sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">🎻</div>
+                <div>
+                    <h1 class="text-xl font-bold text-white">AI Violin Teacher</h1>
+                    <p class="text-xs text-slate-400">智能小提琴老師</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="connectionStatus" class="flex items-center gap-2 text-xs px-3 py-1.5 rounded-full bg-slate-800 text-slate-400">
+                    <span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
+                    <span id="statusText">未連接</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+
+        <div class="flex gap-6 border-b border-slate-700 pb-1">
+            <button onclick="switchTab('practice')" id="tab-practice" class="tab-active pb-3 text-sm font-medium transition-colors" style="border-bottom:2px solid #6366f1;color:#818cf8;">🎵 練習模式</button>
+            <button onclick="switchTab('record')" id="tab-record" class="pb-3 text-sm font-medium transition-colors" style="border-bottom:2px solid transparent;color:#94a3b8;">📹 錄影回放</button>
+            <button onclick="switchTab('history')" id="tab-history" class="pb-3 text-sm font-medium transition-colors" style="border-bottom:2px solid transparent;color:#94a3b8;">📊 練習紀錄</button>
+        </div>
+
+        <div id="panel-practice" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-white flex items-center gap-2">📹 錄影預覽</h2>
+                        <span id="recordingTimer" class="text-2xl font-mono font-bold text-red-400 hidden">00:00</span>
+                    </div>
+                    <div class="relative rounded-xl overflow-hidden bg-black aspect-video">
+                        <video id="videoPreview" class="w-full h-full object-cover" autoplay muted playsinline></video>
+                        <div id="recordingIndicator" class="absolute top-4 right-4 w-3 h-3 rounded-full bg-red-500 hidden recording-pulse"></div>
+                        <div id="placeholderOverlay" class="absolute inset-0 flex items-center justify-center text-slate-500">
+                            <div class="text-center">
+                                <div class="text-4xl mb-2">🎻</div>
+                                <p class="text-sm">點擊「開始錄影」啟動攝影機</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="btnStartRecord" onclick="startRecording()" class="btn-primary flex-1 py-3 rounded-xl font-medium text-white text-sm">🔴 開始錄影</button>
+                        <button id="btnStopRecord" onclick="stopRecording()" class="btn-danger flex-1 py-3 rounded-xl font-medium text-white text-sm hidden" disabled>⏹ 停止錄影</button>
+                        <button id="btnPlayBack" onclick="playBack()" class="btn-success flex-1 py-3 rounded-xl font-medium text-white text-sm hidden" disabled>▶ 回放</button>
+                        <button id="btnDownload" onclick="downloadVideo()" class="glass flex-1 py-3 rounded-xl font-medium text-slate-300 text-sm hidden" style="background:rgba(30,41,59,0.7);">💾 下載</button>
+                    </div>
+                </div>
+
+                <div class="glass rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-white flex items-center gap-2">🎼 樂譜</h2>
+                        <select id="pieceSelect" onchange="loadPiece(this.value)" class="bg-slate-800 border border-slate-600 rounded-lg px-3 py-1.5 text-sm text-slate-200">
+                            <option value="twinkle">小星星變奏曲</option>
+                            <option value="ode">歡樂頌</option>
+                            <option value="scaleG">G大調音階</option>
+                            <option value="scaleD">D大調音階</option>
+                            <option value="scaleA">A大調音階</option>
+                        </select>
+                    </div>
+                    <div id="sheetMusic" class="rounded-xl overflow-hidden bg-white" style="min-height:200px;"></div>
+                    <div class="flex items-center justify-between text-xs text-slate-400">
+                        <span>🎯 目標曲目：<span id="targetPieceName" class="text-indigo-400 font-medium">小星星變奏曲</span></span>
+                        <span id="currentNoteDisplay" class="text-lg font-mono text-emerald-400">--</span>
+                    </div>
+                </div>
+            </div>
