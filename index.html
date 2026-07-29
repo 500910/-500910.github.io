@@ -3,25 +3,51 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Omla — 說明頁</title>
+  <title>Omla — 範例說明頁</title>
+  <meta name="description" content="Omla 範例說明頁 — 將說明文字包成可上線的 GitHub Pages 首頁。" />
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Noto Sans TC',Helvetica,Arial;line-height:1.6;padding:24px;max-width:900px;margin:0 auto;color:#111}
-    header{border-bottom:1px solid #eee;padding-bottom:12px;margin-bottom:18px}
-    pre{background:#f7f7f7;border:1px solid #eee;padding:12px;white-space:pre-wrap;word-break:break-word}
-    .note{color:#b33}
-    a.button{display:inline-block;background:#0366d6;color:#fff;padding:8px 12px;border-radius:6px;text-decoration:none}
-    footer{margin-top:28px;color:#666;font-size:14px}
+    :root{--bg:#f6f8fb;--card:#fff;--muted:#6b7280;--accent:#2563eb;--accent-2:#0ea5a4}
+    html,body{height:100%}body{margin:0;font-family:Inter, Roboto, 'Noto Sans TC', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial;line-height:1.5;background:var(--bg);color:#0f172a}
+    .container{max-width:980px;margin:28px auto;padding:28px}
+    header{display:flex;align-items:center;gap:16px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px}
+    h1{margin:0;font-size:24px}
+    p.lead{margin:6px 0 0;color:var(--muted)}
+
+    main{margin-top:22px}
+    .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(12,18,36,0.06)}
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:18px}
+
+    pre{background:#0b1220;color:#e6eef8;padding:14px;border-radius:8px;overflow:auto;font-family:SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:13px}
+    .muted{color:var(--muted);font-size:14px}
+    a.btn{display:inline-block;background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none}
+    .small{font-size:13px;color:var(--muted)}
+
+    aside .card{position:sticky;top:20px}
+    .meta{display:flex;flex-direction:column;gap:8px}
+    .meta .row{display:flex;justify-content:space-between;align-items:center}
+    .footer{margin-top:18px;color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+
+    @media (max-width:880px){.grid{grid-template-columns:1fr;}.container{padding:16px}}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Omla 範例說明頁</h1>
-    <p>此頁由倉庫檔案 <code>omla_v1_complete.html</code> 轉成可上線的首頁 (index.html)</p>
-  </header>
+  <div class="container">
+    <header>
+      <div class="logo">OM</div>
+      <div>
+        <h1>Omla 範例說明頁</h1>
+        <p class="lead">已將原始說明文字包裝成可上線的 GitHub Pages 首頁。你可以直接編輯此頁內容。</p>
+      </div>
+    </header>
 
-  <section>
-    <h2>原始內容（可複製使用）</h2>
-    <pre>不用下載文件那么麻烦，我直接把代码贴出来，你在聊天界面长按复制更方便：
+    <main class="grid" aria-live="polite">
+      <section class="card">
+        <h2 style="margin-top:0">快速預覽與複製</h2>
+        <p class="muted">下面是原始說明文字，你可以複製、編輯，或按右側按鈕在 GitHub 上打開原始檔案。</p>
+
+        <pre id="orig">不用下載文件那么麻烦，我直接把代码贴出来，你在聊天界面长按复制更方便：
 📱 手机操作步骤
 第 1 步：复制代码
 长按下面代码框里的任意位置 → 选择「全选」→ 「复制"
@@ -38,13 +64,57 @@
 
 （以上為原始檔案內容）</pre>
 
-    <p class="note">提示：若希望此網站為你的 GitHub Pages 首頁，請確保在此倉庫根目錄存在 <code>index.html</code>（已建立）並於 Settings → Pages 設定 Branch 為你要的分支（通常是 <code>main</code>）。</p>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button id="copyBtn" class="btn">複製原始內容</button>
+          <a class="btn" href="https://github.com/500910/500910.github.io/blob/main/omla_v1_complete.html" target="_blank" rel="noopener">在 GitHub 檢視原始檔案</a>
+          <a class="btn" href="https://github.com/500910/500910.github.io/blob/main/index.html" target="_blank" rel="noopener">在 GitHub 檢視目前首頁</a>
+        </div>
 
-    <p>你也可以直接查看或編輯原始檔案： <a class="button" href="https://github.com/500910/500910.github.io/blob/main/omla_v1_complete.html" target="_blank" rel="noopener">檢視 omla_v1_complete.html</a></p>
-  </section>
+        <div class="footer small">
+          小提示：若希望首頁為你的 Pages 首頁，請確保 Settings → Pages 選擇 Branch = main / Folder = root。若你不想使用 Jekyll，可新增空檔 <code>.nojekyll</code>。
+        </div>
+      </section>
 
-  <footer>
-    <p>如果要我把內容調整成更漂亮的頁面（加入圖片、CSS 或導覽），回覆我想要的版型與文字，我會幫你更新。</p>
-  </footer>
+      <aside>
+        <div class="card">
+          <div class="meta">
+            <div class="row"><span class="small">Commit</span><strong class="small">0f1cef97</strong></div>
+            <div class="row"><span class="small">Branch</span><strong class="small">main</strong></div>
+            <div class="row"><span class="small">Pages URL</span><a class="small" href="https://500910.github.io/" target="_blank" rel="noopener">https://500910.github.io/</a></div>
+          </div>
+
+          <hr style="margin:12px 0;border:none;border-top:1px solid #eef2ff">
+
+          <h3 style="margin:0 0 8px 0">操作快速鍵</h3>
+          <div class="actions">
+            <a class="small" href="https://github.com/500910/500910.github.io/issues" target="_blank" rel="noopener">Issues</a>
+            <a class="small" href="https://github.com/500910/500910.github.io/actions" target="_blank" rel="noopener">Actions</a>
+            <a class="small" href="https://github.com/500910/500910.github.io/settings/pages" target="_blank" rel="noopener">Pages 設定</a>
+          </div>
+
+          <hr style="margin:12px 0;border:none;border-top:1px solid #eef2ff">
+
+          <p class="small">想要更多自訂樣式（logo、配色、聯絡方式、社群連結、導覽列），回覆告訴我你的偏好，我會替你更新並推送。</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer style="text-align:center;margin-top:20px;color:var(--muted)">
+      &copy; 500910 — 由 GitHub Pages 提供託管。若要移除或修改內容，可直接在 repo 編輯 <code>index.html</code>。
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('copyBtn').addEventListener('click', async function(){
+      const text = document.getElementById('orig').innerText;
+      try{
+        await navigator.clipboard.writeText(text);
+        this.textContent = '已複製';
+        setTimeout(()=> this.textContent='複製原始內容',1500);
+      }catch(e){
+        alert('複製失敗，請手動選取並複製');
+      }
+    });
+  </script>
 </body>
 </html>
