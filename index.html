@@ -1,0 +1,116 @@
+好的！我直接给你一个文件就能跑的最初级版，不需要下载、不需要构建。
+我把完整代码写成一个 index.html，你复制粘贴到仓库里就行。
+单文件 AI Violin Teacher
+打开你仓库里的 index.html，全部替换成下面这段代码：
+.tabs {
+  display: flex; padding: 0 16px 12px; gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 0; font-size: 14px; font-weight: 500;
+  color: #94a3b8; border-radius: 10px; border: none; background: none; cursor: pointer;
+}
+.tab.active { color: #a78bfa; background: rgba(124,58,237,0.12); }
+
+.content { padding: 16px; display: none; }
+.content.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.card {
+  background: #16213e; border-radius: 16px; padding: 16px; margin-bottom: 12px;
+}
+.card-title {
+  display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; margin-bottom: 12px;
+}
+.video-area {
+  width: 100%; aspect-ratio: 4/3; background: #000; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; margin-bottom: 12px; position: relative; overflow: hidden;
+}
+.video-area.recording { border: 2px solid #ef4444; }
+.rec-indicator {
+  position: absolute; top: 12px; right: 12px;
+  display: none; align-items: center; gap: 6px;
+  font-size: 12px; color: #ef4444; background: rgba(0,0,0,0.6);
+  padding: 4px 10px; border-radius: 20px;
+}
+.video-area.recording .rec-indicator { display: flex; }
+.rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.btn-record {
+  width: 100%; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  border: none; cursor: pointer; transition: all 0.2s;
+}
+.btn-record.start { background: #7c3aed; color: #fff; }
+.btn-record.stop { background: #ef4444; color: #fff; }
+
+.sheet-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #16213e; border-radius: 16px; padding: 12px 16px;
+}
+.sheet-label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #94a3b8; }
+.sheet-select {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 500; background: #0f3460;
+  padding: 6px 14px; border-radius: 10px; cursor: pointer; border: none; color: #fff;
+}
+
+.note-bubble {
+  width: 36px; height: 36px; border-radius: 50%; background: #0f3460;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; color: #a78bfa;
+}
+.note-bubble.active { background: #7c3aed; color: #fff; transform: scale(1.1); }
+
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.stat-card { background: #16213e; border-radius: 16px; padding: 16px; text-align: center; }
+.stat-value { font-size: 28px; font-weight: 600; color: #a78bfa; }
+.stat-label { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+.history-item {
+  display: flex; justify-content: space-between; padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.history-item:last-child { border-bottom: none; }
+.score { font-weight: 600; }
+.score.high { color: #22c55e; }
+.score.mid { color: #eab308; }
+
+.center { text-align: center; padding: 40px 20px; }
+.big-icon { width: 64px; height: 64px; margin: 0 auto 16px; color: #a78bfa; opacity: 0.8; }
+.hint { font-size: 14px; color: #64748b; }
+
+.controls { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px; }
+.ctrl-btn {
+  width: 40px; height: 40px; border-radius: 50%; background: #0f3460;
+  display: flex; align-items: center; justify-content: center;
+  border: none; color: #fff; cursor: pointer;
+}
+.play-btn {
+  padding: 10px 24px; border-radius: 24px; background: #7c3aed;
+  color: #fff; font-size: 14px; font-weight: 600; border: none; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+}
+
+----
+✅ 推送步骤
+cd ai-violin-teacher
+覆盖 index.html
+（把上面代码粘贴进去，保存）
+git add index.html
+git commit -m "Deploy single-file AI Violin Teacher"
+git push origin main
+等 1-2 分钟，刷新：
+👉 https://500910.github.io/ai-violin-teacher/
+这次应该能看到完整的应用界面了！如果还有问题告诉我。
+cd ai-violin-teacher
+
+# 覆盖 index.html
+# （把上面代码粘贴进去，保存）
+
+git add index.html
+git commit -m "Deploy single-file AI Violin Teacher"
+git push origin main
