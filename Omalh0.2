@@ -1,0 +1,22 @@
+cd 500910.github.io
+
+cat > index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>OMLAH Beta 0.1</title>
+<style>
+body{font-family:sans-serif;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}
+h1{font-size:24px}
+</style>
+</head>
+<body>
+<h1>OMLAH Beta 0.1</h1>
+</body>
+</html>
+EOF
+
+git add index.html
+git commit -m "Restore OMLAH placeholder"
+git push origin main
