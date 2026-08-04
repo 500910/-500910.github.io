@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>AI 小提琴老师</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px}
+.header{text-align:center;margin-bottom:12px}
+.header h1{font-size:24px;font-weight:800;background:linear-gradient(135deg,#a3e635,#4ade80);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{color:#8b949e;font-size:12px;margin-top:2px}
+.cam{width:100%;max-width:380px;aspect-ratio:4/3;background:#000;border-radius:14px;overflow:hidden;position:relative;border:1px solid #30363d;margin-bottom:12px}
+.cam video{width:100%;height:100%;object-fit:cover;display:none}
+.cam .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#484f58;font-size:12px;cursor:pointer}
+.meter{width:100%;max-width:380px;background:#161b22;border-radius:14px;padding:16px;border:1px solid #30363d;margin-bottom:12px;position:relative}
+.meter .track{position:relative;height:140px;display:flex;justify-content:center;align-items:flex-end}
+.meter .rail{position:absolute;width:4px;height:100%;background:#21262d;border-radius:2px}
+.meter .needle{position:absolute;bottom:50%;transform:translateY(50%);width:22px;height:22px;border-radius:50%;border:3px solid #0d1117;background:#3fb950;box-shadow:0 0 12px rgba(63,185,80,.4);transition:bottom .15s,background .15s;z-index:2}
+.meter .target{position:absolute;width:32px;height:32px;background:rgba(63,185,80,.08);border-radius:50%;border:1px solid rgba(63,185,80,.2);bottom:50%;transform:translateY(50%)}
+.meter .note{text-align:center;margin-top:8px;font-size:28px;font-weight:800;min-height:36px}
+.meter .freq{text-align:center;font-size:12px;color:#8b949e}
+.meter .cents{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:#3fb950}
+.strings{width:100%;max-width:380px;display:flex;gap:6px;margin-bottom:10px}
+.str-btn{flex:1;padding:9px 0;border-radius:10px;border:1px solid #30363d;background:#161b22;color:#8b949e;font-size:12px;font-weight:600;cursor:pointer}
+.str-btn.active{background:rgba(163,230,53,.15);color:#a3e635;border-color:rgba(163,230,53,.4)}
+.ctrl{width:100%;max-width:380px;display:flex;gap:8px;margin-bottom:10px}
+.metro{flex:1;background:rgba(163,230,53,.12);color:#a3e635;border:1px solid rgba(163,230,53,.3);padding:10px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer}
+.metro.on{background:rgba(163,230,53,.35)}
+.tempo{flex:1.5;display:flex;align-items:center;gap:6px;background:#161b22;padding:8px 12px;border-radius:10px;border:1px solid #30363d}
+.tempo span{font-size:12px;color:#8b949e}
+.tempo input{flex:1;accent-color:#58a6ff}
+.tempo .val{font-size:12px;color:#58a6ff;font-weight:700;min-width:24px;text-align:right}
+.bottom{width:100%;max-width:380px;display:flex;justify-content:space-between;align-items:flex-end}
+.status{color:#6e7681;font-size:11px}
+.pip{width:80px;height:100px;background:#000;border-radius:10px;overflow:hidden;border:2px solid #30363d;position:relative}
+.pip video{width:100%;height:100%;object-fit:cover;display:none}
+.pip .pip-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#484f58}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:200}
+.start{background:linear-gradient(135deg,#3fb950,#2ea043);color:#fff;border:none;padding:16px 36px;border-radius:30px;font-size:16px;font-weight:700;cursor:pointer}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="header"><h1>AI 小提琴老师</h1><p>初级版 · 音准检测 & 录像回放</p></div>
+<div class="cam"><video id="mv" autoplay muted playsinline></video><div class="ph" id="cph">📷 点击开启摄像头</div></div>
+<div class="meter">
+<div class="track"><div class="rail"></div><div class="target"></div><div class="needle" id="nd"></div></div>
+<div class="note" id="nn">--</div><div class="freq" id="nf">等待演奏...</div><div class="cents" id="nc"></div>
+</div>
+<div class="strings">
+<button class="str-btn" data-f="196" data-n="G3">G3</button>
+<button class="str-btn" data-f="293.66" data-n="D4">D4</button>
+<button class="str-btn active" data-f="440" data-n="A4">A4</button>
+<button class="str-btn" data-f="659.25" data-n="E5">E5</button>
+<button class="str-btn" data-f="0" data-n="自由">自由</button>
+</div>
+<div class="ctrl">
+<button class="metro" id="mb">⏱ 节拍器</button>
+<div class="tempo"><span>速度</span><input type="range" id="ts" min="40" max="208" value="100"><span class="val" id="tv">100</span></div>
+</div>
+<div class="bottom"><div class="status" id="st">太安静了 · 请拉响琴</div><div class="pip"><video id="pv" autoplay muted playsinline></video><div class="pip-ph" id="pph">📷</div></div></div>
+<div class="overlay" id="ov"><button class="start" id="sb">🎻 开始练习</button></div>
+<script>
+let ac=null,an=null,ms=null,rid=null,tf=440,tn='A4';
+const NM=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function f2n(f){const s=12*Math.log2(f/440),i=Math.round(s),c=Math.round((s-i)*100),o=Math.floor((i+57)/12)-1,n=NM[((i%12)+12)%12];return{name:n+o,cents:c}}
+function acf(b,sr){let sz=b.length,r=0;for(let i=0;i<sz;i++)r+=b[i]*b[i];r=Math.sqrt(r/sz);if(r<0.008)return-1;let r1=0,r2=sz-1,t=0.2;for(let i=0;i<sz/2;i++)if(Math.abs(b[i])<t){r1=i;break}for(let i=1;i<sz/2;i++)if(Math.abs(b[sz-i])<t){r2=sz-i;break}b=b.slice(r1,r2);sz=b.length;let c=new Array(sz).fill(0);for(let i=0;i<sz;i++)for(let j=0;j<sz-i;j++)c[i]+=b[j]*b[j+i];let d=0;while(c[d]>c[d+1])d++;let mx=-1,mp=-1;for(let i=d;i<sz;i++)if(c[i]>mx){mx=c[i];mp=i}let T=mp;if(T>0&&T<sz-1){let x1=c[T-1],x2=c[T],x3=c[T+1],a=(x1+x3-2*x2)/2,bv=(x3-x1)/2;if(a)T=T-bv/(2*a)}return sr/T}
+async function cam(){try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});document.getElementById('mv').srcObject=s;document.getElementById('pv').srcObject=s;document.getElementById('mv').style.display='block';document.getElementById('pv').style.display='block';document.getElementById('cph').classList.add('hidden');document.getElementById('pph').classList.add('hidden')}catch(e){}}
+async function aud(){try{ac=new(window.AudioContext||window.webkitAudioContext)();const s=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});ms=s;const src=ac.createMediaStreamSource(s);an=ac.createAnalyser();an.fftSize=2048;an.smoothingTimeConstant=0.85;src.connect(an);document.getElementById('st').textContent='正在监听...'}catch(e){document.getElementById('st').textContent='麦克风未授权 · 使用模拟模式'}}
+function up(){if(!an){rid=requestAnimationFrame(up);return}const b=new Float32Array(an.fftSize);an.getFloatTimeDomainData(b);const f=acf(b,ac.sampleRate);const nn=document.getElementById('nn'),nf=document.getElementById('nf'),nd=document.getElementById('nd'),nc=document.getElementById('nc'),st=document.getElementById('st');if(f===-1){nn.textContent='--';nf.textContent='等待演奏...';nc.textContent='';nd.style.bottom='50%';st.textContent='太安静了 · 请拉响琴';rid=requestAnimationFrame(up);return}const info=f2n(f);let dc=info.cents;if(tf>0){dc=Math.round(1200*Math.log2(f/tf));nn.textContent=tn}else{nn.textContent=info.name}const cl=Math.max(-40,Math.min(40,dc));const pct=50+(cl/40)*45;nf.textContent=f.toFixed(1)+' Hz';nd.style.bottom=pct+'%';nc.textContent=(dc>0?'+':'')+dc+'¢';if(Math.abs(dc)<=5){nd.style.background='#3fb950';nd.style.boxShadow='0 0 16px rgba(63,185,80,.6)';nc.style.color='#3fb950';st.textContent='✓ 音准完美'}else if(Math.abs(dc)<=15){nd.style.background='#d29922';nd.style.boxShadow='0 0 12px rgba(210,153,34,.4)';nc.style.color='#d29922';st.textContent=dc>0?'↗ 稍微偏高':'↘ 稍微偏低'}else{nd.style.background='#f85149';nd.style.boxShadow='0 0 12px rgba(248,81,73,.4)';nc.style.color='#f85149';st.textContent=dc>0?'↑ 音高偏高':'↓ 音高偏低'}rid=requestAnimationFrame(up)}
+let mi=null,mo=false;function clk(a){const ctx=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=a?1200:800;g.gain.setValueAtTime(a?.35:.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.06);o.start(ctx.currentTime);o.stop(ctx.currentTime+.06)}
+function tgm(){mo=!mo;const b=document.getElementById('mb');if(mo){b.classList.add('on');const bp=parseInt(document.getElementById('ts').value);let bt=0;clk(true);bt++;mi=setInterval(()=>{clk(bt%4===0);bt++},60000/bp)}else{b.classList.remove('on');clearInterval(mi)}}
+document.getElementById('sb').addEventListener('click',async()=>{document.getElementById('ov').classList.add('hidden');await aud();await cam();up()});
+document.getElementById('cph').addEventListener('click',cam);
+document.querySelectorAll('.str-btn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.str-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');tf=parseFloat(b.dataset.f);tn=b.dataset.n}));
+document.getElementById('mb').addEventListener('click',tgm);
+document.getElementById('ts').addEventListener('input',function(){document.getElementById('tv').textContent=this.value;if(mo){clearInterval(mi);const bp=parseInt(this.value);let bt=0;clk(true);bt++;mi=setInterval(()=>{clk(bt%4===0);bt++},60000/bp)}});
+</script>
+</body>
+</html>
